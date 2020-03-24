@@ -8,7 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import ch.epfl.sdp.R
+import ch.epfl.sdp.SavedMap
+import kotlinx.android.synthetic.main.fragment_maps_managing.*
 
 class MapsManagingFragment : Fragment() {
 
@@ -27,5 +30,23 @@ class MapsManagingFragment : Fragment() {
             textView.text = "Maps managing fragment\n(get offline maps here)"
         })
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val mapNames: ArrayList<SavedMap> = ArrayList()
+        mapNames.add(SavedMap("Switzerland"))
+        mapNames.add(SavedMap("Germany"))
+        mapNames.add(SavedMap("Italy"))
+        mapNames.add(SavedMap("France"))
+        mapNames.add(SavedMap("Spain"))
+        super.onViewCreated(view, savedInstanceState)
+        // RecyclerView node initialized here
+        mapSelectionRecyclerview.apply {
+            // set a LinearLayoutManager to handle Android
+            // RecyclerView behavior
+            layoutManager = LinearLayoutManager(activity)
+            // set the custom adapter to the RecyclerView
+            adapter = MapSelectionRecyclerViewAdapter(mapNames)
+        }
     }
 }
