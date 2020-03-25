@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ch.epfl.sdp.SavedMap
-import ch.epfl.sdp.SavedMapViewHolder
 
 class MapSelectionRecyclerViewAdapter(private val list: List<SavedMap>)
     : RecyclerView.Adapter<SavedMapViewHolder>() {

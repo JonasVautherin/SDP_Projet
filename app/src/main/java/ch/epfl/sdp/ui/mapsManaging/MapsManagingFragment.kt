@@ -43,7 +43,7 @@ class MapsManagingFragment : Fragment() {
         mapNames.add(SavedMap("Matterhorn sud"))
         mapNames.add(SavedMap("Diablerets"))
         mapNames.add(SavedMap("Verbier sud"))
-        mapNames.add(SavedMap("verbier ouest"))
+        mapNames.add(SavedMap("Verbier ouest"))
         mapNames.add(SavedMap("Glacier 3000"))
         mapNames.add(SavedMap("Moleson"))
         mapNames.add(SavedMap("Montblanc"))
