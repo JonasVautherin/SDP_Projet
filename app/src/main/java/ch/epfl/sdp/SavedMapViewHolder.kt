@@ -6,17 +6,20 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class SavedMapViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.map_selection_recyclerview_row, parent, false)) {
-    private var mTitleView: TextView? = null
-    private var mYearView: TextView? = null
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.map_selection_recyclerview_item, parent, false)) {
+    private var mTitleView: TextView?
+    private var mOtherView: TextView?
+
 
 
     init {
         mTitleView = itemView.findViewById(R.id.savedMapName)
+        mOtherView = itemView.findViewById(R.id.savedMapOtherProperty)
     }
 
     fun bind(savedMap: SavedMap) {
         mTitleView?.text = savedMap.name
+        mOtherView?.text = "Used space: 213.34 Mb"
     }
 
 }

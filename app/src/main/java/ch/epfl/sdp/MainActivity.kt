@@ -15,9 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import ch.epfl.sdp.ui.mapsManaging.MapSelectionRecyclerViewAdapter
+import ch.epfl.sdp.ui.maps.SupportMapFragmentActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -31,7 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     private val RC_SIGN_IN = 9001
 
-    var adapter: MapSelectionRecyclerViewAdapter? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -114,5 +111,9 @@ class MainActivity : AppCompatActivity() {
         usernameView.text = username ?: "default_username"
         userEmailView.text = userEmail ?: "default_email"
         //userImageView.setImageDrawable(userImage)
+    }
+
+    fun openMapForOfflineDownload (view: View?) {
+        startActivity(Intent(this, SupportMapFragmentActivity::class.java))
     }
 }
