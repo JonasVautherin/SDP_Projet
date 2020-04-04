@@ -6,12 +6,23 @@ import io.mavsdk.mission.Mission
 
 object DroneMission {
     private val missionItems = arrayListOf<Mission.MissionItem>()
+    private var isHomePositionSet : Boolean = false
+    lateinit var homePosition: LatLng
 
     fun makeDroneMission(path: List<LatLng>): DroneMission {
         addMissionItems(path)
         return this
     }
 
+    fun set(homePosition : LatLng){
+        isHomePositionSet = true
+        this.homePosition = homePosition
+    }
+
+    fun get() : Boolean{
+        return isHomePositionSet
+    }
+    
     fun startMission() {
         val drone = Drone.instance
         val isConnectedCompletable = drone.core.connectionState
