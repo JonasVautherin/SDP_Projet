@@ -3,33 +3,36 @@ package ch.epfl.sdp
 import ch.epfl.sdp.drone.Drone
 import com.mapbox.mapboxsdk.geometry.LatLng
 import io.mavsdk.mission.Mission
+import io.reactivex.Completable
 
 object DroneMission {
     private val missionItems = arrayListOf<Mission.MissionItem>()
-    private var isHomePositionSet : Boolean = false
-    lateinit var homePosition: LatLng
 
     fun makeDroneMission(path: List<LatLng>): DroneMission {
         addMissionItems(path)
         return this
     }
 
-    fun set(homePosition : LatLng){
-        isHomePositionSet = true
-        this.homePosition = homePosition
+    fun returnHome(){
+        val drone = Drone.instance
+        val isDroneConnectedCompletable = isDroneConnected()
+        isDroneConnectedCompletable
+                //.andThen(drone.mission.pauseMission())
+                .andThen(drone.action.returnToLaunch())
+                .subscribe()
     }
 
-    fun get() : Boolean{
-        return isHomePositionSet
-    }
-    
-    fun startMission() {
-        val drone = Drone.instance
-        val isConnectedCompletable = drone.core.connectionState
+    private fun isDroneConnected() : Completable {
+        return Drone.instance.core.connectionState
                 .filter { state -> state.isConnected }
                 .firstOrError()
                 .toCompletable()
+    }
 
+
+    fun startMission() {
+        val drone = Drone.instance
+        val isConnectedCompletable = isDroneConnected()
         isConnectedCompletable
                 .andThen(drone.mission.setReturnToLaunchAfterMission(true))
                 .andThen(drone.mission.uploadMission(missionItems))

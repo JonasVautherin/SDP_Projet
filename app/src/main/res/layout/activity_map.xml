@@ -39,6 +39,19 @@
             android:textColor="@android:color/white" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/return_home"
+        style="?android:attr/buttonCornerRadius"
+        android:layout_width="109dp"
+        android:layout_height="61dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/return_home"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="@+id/mapView"
+        app:layout_constraintStart_toStartOf="@+id/mapView" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         style="?android:attr/buttonBarStyle"

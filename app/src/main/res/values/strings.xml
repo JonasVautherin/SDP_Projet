@@ -58,6 +58,7 @@
     <string name="start">Start</string>
     <string name="store">Store</string>
     <string name="clear">Clear</string>
+    <string name="return_home">Return Home</string>
 
     <string name="prefs_latitude">latitude</string>
     <string name="prefs_longitude">longitude</string>
