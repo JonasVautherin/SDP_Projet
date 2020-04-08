@@ -3,6 +3,7 @@ package ch.epfl.sdp
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -64,19 +65,21 @@ class MapActivityTest {
     }
 
     @Test
-    fun canStartMission() {
+    fun canStartMissionAndReturnHome() {
         // Launch activity
         mActivityRule.launchActivity(Intent())
         // Add 4 points to the map for the strategy
         runOnUiThread {
             arrayListOf(
-                    LatLng(8.543434, 47.398979),
-                    LatLng(8.543934, 47.398279),
-                    LatLng(8.544867, 47.397426),
-                    LatLng(8.543067, 47.397026)
+                    LatLng(47.398979,  8.543434),
+                    LatLng(47.398279, 8.543434),
+                    LatLng(47.397426, 8.544867),
+                    LatLng(47.397026, 8.543067)
             ).forEach { latLng -> mActivityRule.activity.onMapClicked(latLng) }
         }
         onView(withId(R.id.start_mission_button)).perform(click())
+        Thread.sleep(10000)
+        onView(withId(R.id.return_home)).perform(click())
     }
 
     @Test

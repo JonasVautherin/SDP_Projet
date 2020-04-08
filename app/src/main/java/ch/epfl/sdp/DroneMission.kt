@@ -17,7 +17,6 @@ object DroneMission {
         val drone = Drone.instance
         val isDroneConnectedCompletable = isDroneConnected()
         isDroneConnectedCompletable
-                //.andThen(drone.mission.pauseMission())
                 .andThen(drone.action.returnToLaunch())
                 .subscribe()
     }

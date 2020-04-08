@@ -41,7 +41,6 @@
 
     <Button
         android:id="@+id/return_home"
-        style="?android:attr/buttonCornerRadius"
         android:layout_width="109dp"
         android:layout_height="61dp"
         android:layout_weight="1"
