@@ -77,21 +77,17 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
         super.initMapView(savedInstanceState, R.layout.activity_map, R.id.mapView)
         mapView.getMapAsync(this)
 
-        findViewById<Button>(R.id.start_mission_button).setOnClickListener {
-            DroneMission.makeDroneMission(Drone.overflightStrategy.createFlightPath(waypoints)).startMission()
-        }
-
-        findViewById<Button>(R.id.stored_offline_map).setOnClickListener {
-            startActivity(Intent(applicationContext, OfflineManagerActivity::class.java))
-        }
-
-        findViewById<Button>(R.id.clear_waypoints).setOnClickListener {
-            clearWaypoints()
-        }
-
         mapView.contentDescription = MAP_NOT_READY_DESCRIPTION
 
         CentralLocationManager.configure(this)
+    }
+
+    fun launchOfflineMapActivity(){
+        startActivity(Intent(applicationContext, OfflineManagerActivity::class.java))
+    }
+
+    fun startMission(){
+        DroneMission.makeDroneMission(Drone.overflightStrategy.createFlightPath(waypoints)).startMission()
     }
 
     fun returnHome(){
@@ -196,7 +192,7 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
         waypointCircleManager?.create(circleOptions)
     }
 
-    private fun clearWaypoints() {
+    fun clearWaypoints() {
         waypoints.clear()
         waypointCircleManager?.deleteAll()
         lineManager?.deleteAll()

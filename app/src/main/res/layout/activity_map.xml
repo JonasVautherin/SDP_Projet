@@ -85,7 +85,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/start"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:onClick="startMission"/>
 
         <Button
             android:id="@+id/stored_offline_map"
@@ -95,7 +96,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/store"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:onClick="launchOfflineMapActivity"/>
 
         <Button
             android:id="@+id/clear_waypoints"
@@ -105,7 +107,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/clear"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:onClick="clearWaypoints"/>
     </LinearLayout>
 
     <com.mapbox.mapboxsdk.maps.MapView
