@@ -120,7 +120,7 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
         startActivity(Intent(applicationContext, OfflineManagerActivity::class.java))
     }
 
-    fun startMission(){
+    fun startMissionButton(){
         DroneMission.makeDroneMission(Drone.overflightStrategy.createFlightPath(waypoints))
                 .startMission()
     }
