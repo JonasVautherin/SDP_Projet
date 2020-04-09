@@ -86,6 +86,7 @@ class MapActivityTest {
         val expectedLong = position!!.longitude
 
         onView(withId(R.id.start_mission_button)).perform(click()) //launching mission
+        Thread.sleep(1000) // sleep a bit to let at leat the drone take off
         onView(withId(R.id.return_home)).perform(click()) //returning home
 
         //get the position the drone is going to

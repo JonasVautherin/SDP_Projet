@@ -3,6 +3,7 @@ package ch.epfl.sdp
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -98,16 +99,6 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
         distanceToUserTextView = findViewById(R.id.distance_to_user)
         droneSpeedTextView = findViewById(R.id.speed)
 
-        findViewById<Button>(R.id.start_mission_button).setOnClickListener {
-            DroneMission.makeDroneMission(Drone.overflightStrategy.createFlightPath(waypoints)).startMission()
-        }
-        findViewById<Button>(R.id.stored_offline_map).setOnClickListener {
-            startActivity(Intent(applicationContext, OfflineManagerActivity::class.java))
-        }
-        findViewById<Button>(R.id.clear_waypoints).setOnClickListener {
-            clearWaypoints()
-        }
-
         userLatitudeTextView = findViewById(R.id.tv_latitude)
         userLongitudeTextView = findViewById(R.id.tv_longitude)
 
@@ -116,16 +107,16 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
 
     }
   
-    fun launchOfflineMapActivity(){
+    fun launchOfflineMapActivity(v : View){
         startActivity(Intent(applicationContext, OfflineManagerActivity::class.java))
     }
 
-    fun startMissionButton(){
+    fun startMissionButton(v : View){
         DroneMission.makeDroneMission(Drone.overflightStrategy.createFlightPath(waypoints))
                 .startMission()
     }
 
-    fun returnHome(){
+    fun returnHomeButton(v : View){
         DroneMission.returnHome()
     }
 
@@ -255,7 +246,7 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
     /**
      * Clears the waypoints list and removes all the lines and points related to waypoints
      */
-   fun clearWaypoints() {
+   fun clearWaypoints(v : View) {
         if (!isMapReady) return
         waypoints.clear()
         waypointCircleManager.deleteAll()

@@ -48,11 +48,11 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/return_home"
-        android:onClick="returnHome"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="@+id/mapView"
-        app:layout_constraintStart_toStartOf="@+id/mapView" />
+        app:layout_constraintStart_toStartOf="@+id/mapView"
+        android:onClick="returnHomeButton"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"
