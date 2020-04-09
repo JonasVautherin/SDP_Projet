@@ -89,14 +89,13 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
             clearWaypoints()
         }
 
-        findViewById<Button>(R.id.return_home).setOnClickListener {
-            DroneMission.returnHome()
-        }
-
-
         mapView.contentDescription = MAP_NOT_READY_DESCRIPTION
 
         CentralLocationManager.configure(this)
+    }
+
+    fun returnHome(){
+        DroneMission.returnHome()
     }
 
     override fun onResume() {
