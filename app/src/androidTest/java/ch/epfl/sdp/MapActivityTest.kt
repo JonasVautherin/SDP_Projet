@@ -4,7 +4,6 @@ import android.Manifest.permission
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -24,7 +23,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matchers.closeTo
 
 
@@ -133,7 +131,6 @@ class MapActivityTest {
         getInstrumentation().waitForIdleSync()
     }
 
-    /*
     @Test
     fun mapBoxCanAddPointToHeatMap() {
         mActivityRule.launchActivity(Intent())
@@ -146,8 +143,6 @@ class MapActivityTest {
             mActivityRule.activity.addPointToHeatMap(10.0, 10.0)
         }
     }
-
-     */
 
     @Test
     fun canUpdateUserLocation() {

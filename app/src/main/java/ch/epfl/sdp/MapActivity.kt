@@ -87,7 +87,8 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
     }
 
     fun startMission(){
-        DroneMission.makeDroneMission(Drone.overflightStrategy.createFlightPath(waypoints)).startMission()
+        DroneMission.makeDroneMission(Drone.overflightStrategy.createFlightPath(waypoints))
+                .startMission()
     }
 
     fun returnHome(){
