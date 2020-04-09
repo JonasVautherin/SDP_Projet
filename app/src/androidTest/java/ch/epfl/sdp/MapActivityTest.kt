@@ -20,6 +20,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.Matchers.closeTo
 
 
 @RunWith(AndroidJUnit4::class)
@@ -77,9 +80,25 @@ class MapActivityTest {
                     LatLng(47.397026, 8.543067)
             ).forEach { latLng -> mActivityRule.activity.onMapClicked(latLng) }
         }
-        onView(withId(R.id.start_mission_button)).perform(click())
-        Thread.sleep(10000)
-        onView(withId(R.id.return_home)).perform(click())
+        
+        //get the drone position before take off
+        val position = Drone.currentPositionLiveData.value
+        val expectedLat = position!!.latitude
+        val expectedLong = position!!.longitude
+
+        onView(withId(R.id.start_mission_button)).perform(click()) //launching mission
+        onView(withId(R.id.return_home)).perform(click()) //returning home
+
+        //get the position the drone is going to
+        val missionItem =  Drone.isDroneConnected()
+                .andThen(Drone.instance.mission.downloadMission())
+                .blockingGet()[0]
+        val currentLat =  missionItem.latitudeDeg
+        val currentLong = missionItem.longitudeDeg
+
+        //compare both position
+        assertThat(currentLat, closeTo(expectedLat, 0.01))
+        assertThat(currentLong, closeTo(expectedLong, 0.01))
     }
 
     @Test
@@ -110,6 +129,7 @@ class MapActivityTest {
         getInstrumentation().waitForIdleSync()
     }
 
+    /*
     @Test
     fun mapBoxCanAddPointToHeatMap() {
         mActivityRule.launchActivity(Intent())
@@ -122,6 +142,8 @@ class MapActivityTest {
             mActivityRule.activity.addPointToHeatMap(10.0, 10.0)
         }
     }
+
+     */
 
     @Test
     fun canUpdateUserLocation() {

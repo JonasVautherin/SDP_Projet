@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.mapbox.mapboxsdk.geometry.LatLng
 import io.mavsdk.System
+import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 
 object Drone {
@@ -34,5 +35,12 @@ object Drone {
         })
 
         overflightStrategy = SimpleMultiPassOnQuadrangle(DEFAULT_MAX_DIST_BETWEEN_PASSES)
+    }
+
+    fun isDroneConnected() : Completable {
+        return instance.core.connectionState
+                .filter { state -> state.isConnected }
+                .firstOrError()
+                .toCompletable()
     }
 }

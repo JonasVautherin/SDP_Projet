@@ -15,23 +15,15 @@ object DroneMission {
 
     fun returnHome(){
         val drone = Drone.instance
-        val isDroneConnectedCompletable = isDroneConnected()
+        val isDroneConnectedCompletable = Drone.isDroneConnected()
         isDroneConnectedCompletable
                 .andThen(drone.action.returnToLaunch())
                 .subscribe()
     }
 
-    private fun isDroneConnected() : Completable {
-        return Drone.instance.core.connectionState
-                .filter { state -> state.isConnected }
-                .firstOrError()
-                .toCompletable()
-    }
-
-
     fun startMission() {
         val drone = Drone.instance
-        val isConnectedCompletable = isDroneConnected()
+        val isConnectedCompletable = Drone.isDroneConnected()
         isConnectedCompletable
                 .andThen(drone.mission.setReturnToLaunchAfterMission(true))
                 .andThen(drone.mission.uploadMission(missionItems))
