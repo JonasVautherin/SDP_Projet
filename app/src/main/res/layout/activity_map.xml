@@ -43,16 +43,28 @@
 
     <Button
         android:id="@+id/return_home"
-        android:layout_width="109dp"
-        android:layout_height="61dp"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:onClick="returnHomeButton"
         android:text="@string/return_home"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="@+id/mapView"
-        app:layout_constraintStart_toStartOf="@+id/mapView"
-        android:onClick="returnHomeButton"/>
+        app:layout_constraintLeft_toRightOf="@id/return_user" />
+
+    <Button
+        android:id="@+id/return_user"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:onClick="returnUserButton"
+        android:text="Return User"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintLeft_toRightOf="@id/return_home"
+        app:layout_constraintStart_toStartOf="@+id/mapView" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

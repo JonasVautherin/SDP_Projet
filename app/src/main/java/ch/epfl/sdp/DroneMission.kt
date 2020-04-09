@@ -21,6 +21,18 @@ object DroneMission {
                 .subscribe()
     }
 
+
+    fun returnUser(){
+        val userPosition = CentralLocationManager.currentUserPosition.value
+        val drone = Drone.instance
+        val isDroneConnectedCompletable = Drone.isDroneConnected()
+        isDroneConnectedCompletable
+                .andThen(drone.mission.pauseMission())
+              //  .andThen(drone.action.goto_location(userPosition))
+                .subscribe()
+    }
+
+
     fun startMission() {
         val drone = Drone.instance
         val isConnectedCompletable = Drone.isDroneConnected()

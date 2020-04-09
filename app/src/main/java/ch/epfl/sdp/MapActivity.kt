@@ -120,6 +120,9 @@ class MapActivity : MapViewBaseActivity(), OnMapReadyCallback {
         DroneMission.returnHome()
     }
 
+    fun returnUserButton(v : View){
+        DroneMission.returnUser()
+    }
     override fun onResume() {
         super.onResume()
         Drone.currentPositionLiveData.observe(this, dronePositionObserver)

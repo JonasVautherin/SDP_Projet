@@ -68,24 +68,7 @@ class MapActivityTest {
 
     @Test
     fun canStartMissionAndReturnHome() {
-        // Launch activity
-        mActivityRule.launchActivity(Intent())
-        // Add 4 points to the map for the strategy
-        runOnUiThread {
-            arrayListOf(
-                    LatLng(47.398979,  8.543434),
-                    LatLng(47.398279, 8.543434),
-                    LatLng(47.397426, 8.544867),
-                    LatLng(47.397026, 8.543067)
-            ).forEach { latLng -> mActivityRule.activity.onMapClicked(latLng) }
-        }
-        
-        //get the drone position before take off
-        val position = Drone.currentPositionLiveData.value
-        val expectedLat = position!!.latitude
-        val expectedLong = position!!.longitude
-
-        onView(withId(R.id.start_mission_button)).perform(click()) //launching mission
+        val expectedLatLng = startMissionTest()
         Thread.sleep(1000) // sleep a bit to let at leat the drone take off
         onView(withId(R.id.return_home)).perform(click()) //returning home
 
@@ -97,8 +80,47 @@ class MapActivityTest {
         val currentLong = missionItem.longitudeDeg
 
         //compare both position
-        assertThat(currentLat, closeTo(expectedLat, 0.01))
-        assertThat(currentLong, closeTo(expectedLong, 0.01))
+        assertThat(currentLat, closeTo(expectedLatLng.latitude, 0.01))
+        assertThat(currentLong, closeTo(expectedLatLng.longitude, 0.01))
+    }
+
+    @Test
+    fun canStartMissionAndReturnUser() {
+        val expectedLatLng = startMissionTest()
+        Thread.sleep(1000) // sleep a bit to let at least the drone take off
+        onView(withId(R.id.return_user)).perform(click()) //returning home
+
+        //get the position the drone is going to
+        val missionItem =  Drone.isDroneConnected()
+                .andThen(Drone.instance.mission.downloadMission())
+                .blockingGet()[0]
+        val currentLat =  missionItem.latitudeDeg
+        val currentLong = missionItem.longitudeDeg
+
+        //compare both position
+        assertThat(currentLat, closeTo(expectedLatLng.latitude, 0.01))
+        assertThat(currentLong, closeTo(expectedLatLng.longitude, 0.01))
+    }
+
+    private fun startMissionTest() : LatLng{
+        // Launch activity
+        mActivityRule.launchActivity(Intent())
+        // Add 4 points to the map for the strategy
+        runOnUiThread {
+            arrayListOf(
+                    LatLng(47.398979,  8.543434),
+                    LatLng(47.398279, 8.543434),
+                    LatLng(47.397426, 8.544867),
+                    LatLng(47.397026, 8.543067)
+            ).forEach { latLng -> mActivityRule.activity.onMapClicked(latLng) }
+        }
+        //get the drone position before take off
+        val position = Drone.currentPositionLiveData.value
+        val expectedLat = position!!.latitude
+        val expectedLong = position!!.longitude
+
+        onView(withId(R.id.start_mission_button)).perform(click()) //launching mission$
+        return LatLng(expectedLat, expectedLong)
     }
 
     @Test
