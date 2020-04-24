@@ -67,6 +67,7 @@ class OfflineManagerActivityTest {
         mUiDevice.pressBack() //hide the keyboard
 
         onView(withId(POSITIVE_BUTTON_ID)).perform(click())
+        Thread.sleep(2000)
         onView(withText(MainApplication.applicationContext().getString(R.string.end_progress_success)))
                 .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
                 .check(matches(isDisplayed()))
@@ -150,4 +151,3 @@ class OfflineManagerActivityTest {
                 .check(matches(isDisplayed()))
     }
 }
-
