@@ -38,18 +38,6 @@ class OfflineManagerActivityTest {
         private const val POSITIVE_BUTTON_ID: Int = android.R.id.button1
         private const val NEGATIVE_BUTTON_ID: Int = android.R.id.button2
         private const val NEUTRAL_BUTTON_ID: Int = android.R.id.button3
-
-        private fun clickOnDownloadButton() {
-            onView(withId(R.id.download_button)).perform(click())
-        }
-
-        private fun clickOnDownloadButtonInDialog() {
-            onView(withId(POSITIVE_BUTTON_ID)).perform(click())
-        }
-
-        private fun clickOnListButton() {
-            onView(withId(R.id.list_button)).perform(click())
-        }
     }
 
     @get:Rule
@@ -72,17 +60,17 @@ class OfflineManagerActivityTest {
     }
 
     private fun deleteMap() {
-        clickOnListButton()
+        onView(withId(R.id.list_button)).perform(click())
         onView(withId(NEUTRAL_BUTTON_ID)).perform(click())
         checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.toast_region_deleted))
     }
 
     private fun downloadMap(name: String) {
-        clickOnDownloadButton()
+        onView(withId(R.id.download_button)).perform(click())
         onView(withId(R.id.dialog_textfield_id)).perform(typeText(name))
         mUiDevice.pressBack() //hide the keyboard
 
-        clickOnDownloadButtonInDialog()
+        onView(withId(POSITIVE_BUTTON_ID)).perform(click())
         checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.end_progress_success))
     }
 
@@ -96,14 +84,14 @@ class OfflineManagerActivityTest {
     }
 
     private fun navigateToDownloadedMap(name: String) {
-        clickOnListButton()
+        onView(withId(R.id.list_button)).perform(click())
         onView(withId(POSITIVE_BUTTON_ID)).perform(click())
         checkToastMessageIsDisplayed(name)
     }
 
     @Test
     fun cannotClickOnListWhenNoDownloadedMap() {
-        clickOnListButton()
+        onView(withId(R.id.list_button)).perform(click())
         checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.toast_no_regions_yet))
     }
 
@@ -113,7 +101,7 @@ class OfflineManagerActivityTest {
 
         navigateToDownloadedMap(RANDOM_NAME)
 
-        clickOnListButton()
+        onView(withId(R.id.list_button)).perform(click())
         onView(withId(NEGATIVE_BUTTON_ID)).perform(click())
 
         deleteMap()
@@ -147,14 +135,14 @@ class OfflineManagerActivityTest {
 
     @Test
     fun canClickOnCancelDownloadDialog() {
-        clickOnDownloadButton()
+        onView(withId(R.id.download_button)).perform(click())
         onView(withId(NEGATIVE_BUTTON_ID)).perform(click())
     }
 
     @Test
     fun cannotDownloadEmptyMapName() {
-        clickOnDownloadButton()
-        clickOnDownloadButtonInDialog()
+        onView(withId(R.id.download_button)).perform(click())
+        onView(withId(POSITIVE_BUTTON_ID)).perform(click())
         checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.dialog_toast))
     }
 }
