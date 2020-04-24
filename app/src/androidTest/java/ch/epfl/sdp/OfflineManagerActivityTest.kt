@@ -32,8 +32,8 @@ class OfflineManagerActivityTest {
 
     companion object {
         private const val RANDOM_NAME = "RandomName"
-        private const val CMA_NAME = "CMA"
-        private val CMA: LatLng = LatLng(46.317261, 7.485201)
+        private const val SEA_NAME = "SEA"
+        private val SEA: LatLng = LatLng(39.317261, 6.485201)
         private const val EPSILON = 1e-3
         private const val POSITIVE_BUTTON_ID: Int = android.R.id.button1
         private const val NEGATIVE_BUTTON_ID: Int = android.R.id.button2
@@ -120,17 +120,17 @@ class OfflineManagerActivityTest {
     fun canNavigateToDownloadedMap() {
         val rdmLatLng = LatLng((-90..90).random().toDouble(), (-180..180).random().toDouble())
 
-        moveCameraToPosition(CMA)
+        moveCameraToPosition(SEA)
 
-        downloadMap(CMA_NAME)
+        downloadMap(SEA_NAME)
 
         moveCameraToPosition(rdmLatLng)
 
-        navigateToDownloadedMap(CMA_NAME)
+        navigateToDownloadedMap(SEA_NAME)
 
         mActivityRule.activity.mapView.getMapAsync { mapboxMap ->
-            assertThat(mapboxMap.cameraPosition.target.latitude, Matchers.closeTo(CMA.latitude, EPSILON))
-            assertThat(mapboxMap.cameraPosition.target.longitude, Matchers.closeTo(CMA.longitude, EPSILON))
+            assertThat(mapboxMap.cameraPosition.target.latitude, Matchers.closeTo(SEA.latitude, EPSILON))
+            assertThat(mapboxMap.cameraPosition.target.longitude, Matchers.closeTo(SEA.longitude, EPSILON))
         }
 
         deleteMap()
