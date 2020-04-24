@@ -53,16 +53,12 @@ class OfflineManagerActivityTest {
         }
     }
 
-    private fun checkToastMessageIsDisplayed(message: String) {
-        onView(withText(message))
-                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
-                .check(matches(isDisplayed()))
-    }
-
     private fun deleteMap() {
         onView(withId(R.id.list_button)).perform(click())
         onView(withId(NEUTRAL_BUTTON_ID)).perform(click())
-        checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.toast_region_deleted))
+        onView(withText(MainApplication.applicationContext().getString(R.string.toast_region_deleted)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
     }
 
     private fun downloadMap(name: String) {
@@ -71,7 +67,9 @@ class OfflineManagerActivityTest {
         mUiDevice.pressBack() //hide the keyboard
 
         onView(withId(POSITIVE_BUTTON_ID)).perform(click())
-        checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.end_progress_success))
+        onView(withText(MainApplication.applicationContext().getString(R.string.end_progress_success)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
     }
 
     private fun moveCameraToPosition(pos: LatLng) {
@@ -86,13 +84,17 @@ class OfflineManagerActivityTest {
     private fun navigateToDownloadedMap(name: String) {
         onView(withId(R.id.list_button)).perform(click())
         onView(withId(POSITIVE_BUTTON_ID)).perform(click())
-        checkToastMessageIsDisplayed(name)
+        onView(withText(name))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
     }
 
     @Test
     fun cannotClickOnListWhenNoDownloadedMap() {
         onView(withId(R.id.list_button)).perform(click())
-        checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.toast_no_regions_yet))
+        onView(withText(MainApplication.applicationContext().getString(R.string.toast_no_regions_yet)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
     }
 
     @Test
@@ -143,7 +145,9 @@ class OfflineManagerActivityTest {
     fun cannotDownloadEmptyMapName() {
         onView(withId(R.id.download_button)).perform(click())
         onView(withId(POSITIVE_BUTTON_ID)).perform(click())
-        checkToastMessageIsDisplayed(MainApplication.applicationContext().getString(R.string.dialog_toast))
+        onView(withText(MainApplication.applicationContext().getString(R.string.dialog_toast)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
     }
 }
 
