@@ -17,8 +17,12 @@ import ch.epfl.sdp.MapActivity.Companion.MAP_READY_DESCRIPTION
 import ch.epfl.sdp.MapActivityTest.Companion.MAP_LOADING_TIMEOUT
 import ch.epfl.sdp.ui.maps.MapUtils.getCameraWithParameters
 import ch.epfl.sdp.ui.offlineMapsManaging.OfflineManagerActivity
+import ch.epfl.sdp.ui.offlineMapsManaging.OfflineRegionUtils.getRegionName
 import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.offline.OfflineManager
+import com.mapbox.mapboxsdk.offline.OfflineRegion
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -38,6 +42,8 @@ class OfflineManagerActivityTest {
         private const val POSITIVE_BUTTON_ID: Int = android.R.id.button1
         private const val NEGATIVE_BUTTON_ID: Int = android.R.id.button2
         private const val NEUTRAL_BUTTON_ID: Int = android.R.id.button3
+        val context = MainApplication.applicationContext()
+        val offlineManager: OfflineManager? = OfflineManager.getInstance(context)
     }
 
     @get:Rule
@@ -53,26 +59,6 @@ class OfflineManagerActivityTest {
         }
     }
 
-    private fun deleteMap() {
-        onView(withId(R.id.list_button)).perform(click())
-        onView(withId(NEUTRAL_BUTTON_ID)).perform(click())
-        onView(withText(MainApplication.applicationContext().getString(R.string.toast_region_deleted)))
-                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
-                .check(matches(isDisplayed()))
-    }
-
-    private fun downloadMap(name: String) {
-        onView(withId(R.id.download_button)).perform(click())
-        onView(withId(R.id.dialog_textfield_id)).perform(typeText(name))
-        mUiDevice.pressBack() //hide the keyboard
-
-        onView(withId(POSITIVE_BUTTON_ID)).perform(click())
-        Thread.sleep(2000)
-        onView(withText(MainApplication.applicationContext().getString(R.string.end_progress_success)))
-                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
-                .check(matches(isDisplayed()))
-    }
-
     private fun moveCameraToPosition(pos: LatLng) {
         UiThreadStatement.runOnUiThread {
             mActivityRule.activity.mapView.getMapAsync { mapboxMap ->
@@ -82,32 +68,61 @@ class OfflineManagerActivityTest {
         }
     }
 
-    private fun navigateToDownloadedMap(name: String) {
-        onView(withId(R.id.list_button)).perform(click())
-        onView(withId(POSITIVE_BUTTON_ID)).perform(click())
-        onView(withText(name))
-                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
-                .check(matches(isDisplayed()))
-    }
-
     @Test
-    fun cannotClickOnListWhenNoDownloadedMap() {
+    fun checktToastWhenNoMapsHaveBeenDownloaded() {
         onView(withId(R.id.list_button)).perform(click())
-        onView(withText(MainApplication.applicationContext().getString(R.string.toast_no_regions_yet)))
+        onView(withText(context.getString(R.string.toast_no_regions_yet)))
                 .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
                 .check(matches(isDisplayed()))
     }
 
+    /**
+     * this also tests that Toast are shown
+     */
     @Test
     fun canDownloadAndThenDeleteMap() {
-        downloadMap(RANDOM_NAME)
+        //check that the downloaded list map is empty
+        offlineManager?.listOfflineRegions(object : OfflineManager.ListOfflineRegionsCallback {
+            override fun onList(offlineRegions: Array<OfflineRegion>) {
+                assert(offlineRegions.isEmpty())
+            }
+            override fun onError(error: String) {} //left intentionally empty
+        })
 
-        navigateToDownloadedMap(RANDOM_NAME)
+        //DOWNLOAD part
+        onView(withId(R.id.download_button)).perform(click())
+        onView(withId(R.id.dialog_textfield_id)).perform(typeText(RANDOM_NAME))
+        mUiDevice.pressBack()
+        onView(withId(POSITIVE_BUTTON_ID)).perform(click())
+        onView(withText(context.getString(R.string.end_progress_success)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
+
+        offlineManager?.listOfflineRegions(object : OfflineManager.ListOfflineRegionsCallback {
+            override fun onList(offlineRegions: Array<OfflineRegion>) {
+                //check that the region has been downloaded
+                assertThat(RANDOM_NAME, equalTo(getRegionName(offlineRegions[0])))
+            }
+            override fun onError(error: String) {} //left intentionally empty
+        })
 
         onView(withId(R.id.list_button)).perform(click())
         onView(withId(NEGATIVE_BUTTON_ID)).perform(click())
 
-        deleteMap()
+        //DELETE PART
+        onView(withId(R.id.list_button)).perform(click())
+        onView(withId(NEUTRAL_BUTTON_ID)).perform(click())
+        onView(withText(context.getString(R.string.toast_region_deleted)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
+
+        //check that the downloaded list map is empty
+        offlineManager?.listOfflineRegions(object : OfflineManager.ListOfflineRegionsCallback {
+            override fun onList(offlineRegions: Array<OfflineRegion>) {
+                assert(offlineRegions.isEmpty())
+            }
+            override fun onError(error: String) {} //left intentionally empty
+        })
     }
 
     /**
@@ -115,6 +130,8 @@ class OfflineManagerActivityTest {
      * Download CMA map
      * Then we move the camera somewhere random on the globe
      * And finally we try to navigate back to CMA
+     *
+     * this also tests that Toast are shown
      */
     @Test
     fun canNavigateToDownloadedMap() {
@@ -122,18 +139,51 @@ class OfflineManagerActivityTest {
 
         moveCameraToPosition(SEA)
 
-        downloadMap(SEA_NAME)
+        //check that the downloaded list map is empty
+        offlineManager?.listOfflineRegions(object : OfflineManager.ListOfflineRegionsCallback {
+            override fun onList(offlineRegions: Array<OfflineRegion>) {
+                assert(offlineRegions.isEmpty())
+            }
+            override fun onError(error: String) {} //left intentionally empty
+        })
+
+        //DOWNLOAD Part
+        onView(withId(R.id.download_button)).perform(click())
+        onView(withId(R.id.dialog_textfield_id)).perform(typeText(SEA_NAME))
+        mUiDevice.pressBack()
+        onView(withId(POSITIVE_BUTTON_ID)).perform(click())
+        onView(withText(context.getString(R.string.end_progress_success)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
 
         moveCameraToPosition(rdmLatLng)
 
-        navigateToDownloadedMap(SEA_NAME)
+        //NAVIGATE Part
+        onView(withId(R.id.list_button)).perform(click())
+        onView(withId(POSITIVE_BUTTON_ID)).perform(click())
+        onView(withText(SEA_NAME))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
 
         mActivityRule.activity.mapView.getMapAsync { mapboxMap ->
             assertThat(mapboxMap.cameraPosition.target.latitude, Matchers.closeTo(SEA.latitude, EPSILON))
             assertThat(mapboxMap.cameraPosition.target.longitude, Matchers.closeTo(SEA.longitude, EPSILON))
         }
 
-        deleteMap()
+        //DELETE PART
+        onView(withId(R.id.list_button)).perform(click())
+        onView(withId(NEUTRAL_BUTTON_ID)).perform(click())
+        onView(withText(context.getString(R.string.toast_region_deleted)))
+                .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
+                .check(matches(isDisplayed()))
+
+        //check that the downloaded list map is empty
+        offlineManager?.listOfflineRegions(object : OfflineManager.ListOfflineRegionsCallback {
+            override fun onList(offlineRegions: Array<OfflineRegion>) {
+                assert(offlineRegions.isEmpty())
+            }
+            override fun onError(error: String) {} //left intentionally empty
+        })
     }
 
     @Test
@@ -143,10 +193,10 @@ class OfflineManagerActivityTest {
     }
 
     @Test
-    fun cannotDownloadEmptyMapName() {
+    fun checkToastWhenMapHasEmptyName() {
         onView(withId(R.id.download_button)).perform(click())
         onView(withId(POSITIVE_BUTTON_ID)).perform(click())
-        onView(withText(MainApplication.applicationContext().getString(R.string.dialog_toast)))
+        onView(withText(context.getString(R.string.dialog_toast)))
                 .inRoot(withDecorView(not(mActivityRule.activity.window.decorView)))
                 .check(matches(isDisplayed()))
     }
